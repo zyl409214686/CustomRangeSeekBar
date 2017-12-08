@@ -15,6 +15,7 @@
         rangeseekbar:absolutemMax="100000"
         rangeseekbar:absoluteMin="0"
         rangeseekbar:progressTextSize="16dp"
+        rangeseekbar:progressTextFormat="numberFormat"
         />
 
 </RelativeLayout>

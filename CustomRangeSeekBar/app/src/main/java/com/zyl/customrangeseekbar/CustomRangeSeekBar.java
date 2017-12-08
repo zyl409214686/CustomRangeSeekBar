@@ -60,6 +60,11 @@ public class CustomRangeSeekBar extends View {
     private float mBetweenAbsoluteValue;
     //空间最小宽度
     private final int MIN_WIDTH = 200;
+    //进度文本显示格式-数字格式
+    public static final int HINT_FORMAT_NUMBER = 0;
+    //进度文本显示格式-时间格式
+    public static final int HINT_FORMAT_TIME = 1;
+    private int mProgressTextFormat;
     public CustomRangeSeekBar(Context context) {
         super(context);
     }
@@ -73,6 +78,7 @@ public class CustomRangeSeekBar extends View {
         mProgressBarBg = BitmapFactory.decodeResource(getResources(), a.getResourceId(R.styleable.CustomRangeSeekBar_progressBarBg, R.mipmap.seekbar_bg));
         mProgressBarSelBg = BitmapFactory.decodeResource(getResources(), a.getResourceId(R.styleable.CustomRangeSeekBar_progressBarSelBg, R.mipmap.seekbar_sel_bg));
         mBetweenAbsoluteValue = a.getFloat(R.styleable.CustomRangeSeekBar_betweenAbsoluteValue, 0);
+        mProgressTextFormat = a.getInt(R.styleable.CustomRangeSeekBar_progressTextFormat, HINT_FORMAT_NUMBER);
         float size = a.getDimension(R.styleable.CustomRangeSeekBar_progressTextSize, 16);
         mPaint.setTextSize(size);
         mThumbWidth = mThumbImage.getWidth();
@@ -277,7 +283,7 @@ public class CustomRangeSeekBar extends View {
         mPaint.setColor(Color.rgb(255, 165, 0));
 //        mPaint.setTextSize(DensityUtils.dp2px(getContext(), 16));
         drawThumbMinText(percentToScreen(mPercentMinValue), getSelectedAbsoluteMinValue(), canvas);
-        drawThumbMaxText(percentToScreen(mPercentMaxValue) - dp2px(getContext(), 40), getSelectedAbsoluteMaxValue(), canvas);
+        drawThumbMaxText(percentToScreen(mPercentMaxValue), getSelectedAbsoluteMaxValue(), canvas);
     }
 
     @Override
@@ -316,7 +322,7 @@ public class CustomRangeSeekBar extends View {
      * @param canvas
      */
     private void drawThumbMinText(float screenCoord, Number value, Canvas canvas) {
-        String progress = formatSecondTime(value.intValue());
+        String progress = getProgressStr(value.intValue());
         canvas.drawText(progress, screenCoord + dp2px(getContext(), 5), dp2px(getContext(), 15), mPaint);
     }
 
@@ -328,10 +334,11 @@ public class CustomRangeSeekBar extends View {
      * @param canvas
      */
     private void drawThumbMaxText(float screenCoord, Number value, Canvas canvas) {
-        String progress = formatSecondTime(value.intValue());
+        String progress = getProgressStr(value.intValue());
         Paint.FontMetrics metrics = mPaint.getFontMetrics();
         float txtheight = metrics.descent - metrics.ascent;
-        canvas.drawText(progress, screenCoord - dp2px(getContext(), 5), dp2px(getContext(), 15) + txtheight
+        float txtwidth = mPaint.measureText(progress);
+        canvas.drawText(progress, screenCoord - txtwidth - dp2px(getContext(), 5), dp2px(getContext(), 15) + txtheight
                 , mPaint);
     }
 
@@ -454,10 +461,21 @@ public class CustomRangeSeekBar extends View {
         void onMaxMove(Number max, Number min);
     }
 
+    private String getProgressStr(int progress){
+        String progressStr;
+        if(mProgressTextFormat==HINT_FORMAT_TIME){
+            progressStr = formatSecondTime(progress);
+        }
+        else{
+            progressStr = String.valueOf(progress);
+        }
+        return progressStr;
+    }
+
     /**
      * 格式化毫秒->00:00
      */
-    public static String formatSecondTime(int millisecond) {
+    private static String formatSecondTime(int millisecond) {
         if (millisecond == 0) {
             return "00:00";
         }
@@ -483,4 +501,6 @@ public class CustomRangeSeekBar extends View {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
+
+
 }
