@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:rangeseekbar="http://schemas.android.com/apk/res-auto">
+
+    <com.zyl.customrangeseekbar.CustomRangeSeekBar
+        android:id="@+id/range_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        rangeseekbar:progressBarBg="@mipmap/seekbar_bg"
+        rangeseekbar:progressBarSelBg="@mipmap/seekbar_sel_bg"
+        rangeseekbar:absolutemMax="100000"
+        rangeseekbar:absoluteMin="0"
+        rangeseekbar:progressTextSize="16dp"
+        />
+
+</RelativeLayout>
