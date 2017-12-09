@@ -65,6 +65,8 @@ public class CustomRangeSeekBar extends View {
     //进度文本显示格式-时间格式
     public static final int HINT_FORMAT_TIME = 1;
     private int mProgressTextFormat;
+    private int mWordHeight;
+    private float mWordSize;
     public CustomRangeSeekBar(Context context) {
         super(context);
     }
@@ -79,14 +81,16 @@ public class CustomRangeSeekBar extends View {
         mProgressBarSelBg = BitmapFactory.decodeResource(getResources(), a.getResourceId(R.styleable.CustomRangeSeekBar_progressBarSelBg, R.mipmap.seekbar_sel_bg));
         mBetweenAbsoluteValue = a.getFloat(R.styleable.CustomRangeSeekBar_betweenAbsoluteValue, 0);
         mProgressTextFormat = a.getInt(R.styleable.CustomRangeSeekBar_progressTextFormat, HINT_FORMAT_NUMBER);
-        float size = a.getDimension(R.styleable.CustomRangeSeekBar_progressTextSize, 16);
-        mPaint.setTextSize(size);
+        mWordSize = a.getDimension(R.styleable.CustomRangeSeekBar_progressTextSize, 16);
+        mPaint.setTextSize(mWordSize);
         mThumbWidth = mThumbImage.getWidth();
         mThumbHalfWidth = 0.5f * mThumbWidth;
         mThumbHalfHeight = 0.5f * mThumbImage.getHeight();
         mProgressBarHeight = 0.3f * mThumbHalfHeight;
         //TOOD 提供定义attr
         mWidthPadding = mThumbHalfHeight;
+        Paint.FontMetrics metrics = mPaint.getFontMetrics();
+        mWordHeight = (int) (metrics.descent - metrics.ascent);
         setPercentMinValue(0.0);
         setPercentMaxValue(100.0);
         a.recycle();
@@ -95,7 +99,8 @@ public class CustomRangeSeekBar extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mProgressBarRect = new RectF(mWidthPadding, 0.5f * (h - mProgressBarHeight), w - mWidthPadding, 0.5f * (h + mProgressBarHeight));
+        mProgressBarRect = new RectF(mWidthPadding, mWordHeight + 0.5f * (h - mWordHeight - mProgressBarHeight),
+                w - mWidthPadding, mWordHeight + 0.5f*(h - mWordHeight + mProgressBarHeight));
         mProgressBarSelRect = new RectF(mProgressBarRect);
     }
 
@@ -258,7 +263,7 @@ public class CustomRangeSeekBar extends View {
         if (MeasureSpec.UNSPECIFIED != MeasureSpec.getMode(widthMeasureSpec)) {
             width = MeasureSpec.getSize(widthMeasureSpec);
         }
-        int height = mThumbImage.getHeight();
+        int height = mThumbImage.getHeight() + mWordHeight;
         if (MeasureSpec.UNSPECIFIED != MeasureSpec.getMode(heightMeasureSpec)) {
             height = Math.min(height, MeasureSpec.getSize(heightMeasureSpec));
         }
@@ -311,7 +316,7 @@ public class CustomRangeSeekBar extends View {
      * @param canvas      The canvas to draw upon.
      */
     private void drawThumb(float screenCoord, boolean pressed, Canvas canvas) {
-        canvas.drawBitmap(mThumbImage, screenCoord - mThumbHalfWidth, (float) ((0.5f * getHeight()) - mThumbHalfHeight), mPaint);//pressed ? thumbPressedImage :
+        canvas.drawBitmap(mThumbImage, screenCoord - mThumbHalfWidth, (mWordHeight + 0.5f * (getHeight()-mWordHeight) - mThumbHalfHeight), mPaint);//pressed ? thumbPressedImage :
     }
 
     /**
@@ -323,7 +328,8 @@ public class CustomRangeSeekBar extends View {
      */
     private void drawThumbMinText(float screenCoord, Number value, Canvas canvas) {
         String progress = getProgressStr(value.intValue());
-        canvas.drawText(progress, screenCoord + dp2px(getContext(), 5), dp2px(getContext(), 15), mPaint);
+        float progressWidth = mPaint.measureText(progress);
+        canvas.drawText(progress, screenCoord - progressWidth/2, mWordSize, mPaint);
     }
 
     /**
@@ -335,10 +341,8 @@ public class CustomRangeSeekBar extends View {
      */
     private void drawThumbMaxText(float screenCoord, Number value, Canvas canvas) {
         String progress = getProgressStr(value.intValue());
-        Paint.FontMetrics metrics = mPaint.getFontMetrics();
-        float txtheight = metrics.descent - metrics.ascent;
-        float txtwidth = mPaint.measureText(progress);
-        canvas.drawText(progress, screenCoord - txtwidth - dp2px(getContext(), 5), dp2px(getContext(), 15) + txtheight
+        float progressWidth = mPaint.measureText(progress);
+        canvas.drawText(progress, screenCoord - progressWidth/2, mWordSize
                 , mPaint);
     }
 
