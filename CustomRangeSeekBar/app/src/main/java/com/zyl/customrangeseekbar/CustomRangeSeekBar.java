@@ -65,7 +65,9 @@ public class CustomRangeSeekBar extends View {
     //进度文本显示格式-时间格式
     public static final int HINT_FORMAT_TIME = 1;
     private int mProgressTextFormat;
+    //文本高度
     private int mWordHeight;
+    //文本字体大小
     private float mWordSize;
     public CustomRangeSeekBar(Context context) {
         super(context);
