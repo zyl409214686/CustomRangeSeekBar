@@ -69,6 +69,7 @@ public class CustomRangeSeekBar extends View {
     private int mWordHeight;
     //文本字体大小
     private float mWordSize;
+
     public CustomRangeSeekBar(Context context) {
         super(context);
     }
@@ -83,7 +84,7 @@ public class CustomRangeSeekBar extends View {
         mProgressBarSelBg = BitmapFactory.decodeResource(getResources(), a.getResourceId(R.styleable.CustomRangeSeekBar_progressBarSelBg, R.mipmap.seekbar_sel_bg));
         mBetweenAbsoluteValue = a.getFloat(R.styleable.CustomRangeSeekBar_betweenAbsoluteValue, 0);
         mProgressTextFormat = a.getInt(R.styleable.CustomRangeSeekBar_progressTextFormat, HINT_FORMAT_NUMBER);
-        mWordSize = a.getDimension(R.styleable.CustomRangeSeekBar_progressTextSize, 16);
+        mWordSize = a.getDimension(R.styleable.CustomRangeSeekBar_progressTextSize, dp2px(context, 16));
         mPaint.setTextSize(mWordSize);
         mThumbWidth = mThumbImage.getWidth();
         mThumbHalfWidth = 0.5f * mThumbWidth;
@@ -102,7 +103,7 @@ public class CustomRangeSeekBar extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mProgressBarRect = new RectF(mWidthPadding, mWordHeight + 0.5f * (h - mWordHeight - mProgressBarHeight),
-                w - mWidthPadding, mWordHeight + 0.5f*(h - mWordHeight + mProgressBarHeight));
+                w - mWidthPadding, mWordHeight + 0.5f * (h - mWordHeight + mProgressBarHeight));
         mProgressBarSelRect = new RectF(mProgressBarRect);
     }
 
@@ -134,7 +135,7 @@ public class CustomRangeSeekBar extends View {
      * 设置被选择的最小值（绝对值）
      *
      * @param value 最小值的绝对值
-     * return 如果最小值与最大值的最小间距达到阈值返回false,正常返回true
+     *              return 如果最小值与最大值的最小间距达到阈值返回false,正常返回true
      */
     public boolean setSelectedAbsoluteMinValue(float value) {
         boolean status = true;
@@ -142,13 +143,21 @@ public class CustomRangeSeekBar extends View {
             setPercentMinValue(0d);
         } else {
             float maxValue = percentToAbsoluteValue(mPercentMaxValue);
-            if (mBetweenAbsoluteValue>0 && maxValue - value <= mBetweenAbsoluteValue) {
+            if (mBetweenAbsoluteValue > 0 && maxValue - value <= mBetweenAbsoluteValue) {
                 value = new Float(maxValue - mBetweenAbsoluteValue);
                 status = false;
+            }
+            if (maxValue - value <= 0) {
+                status = false;
+                value = maxValue;
             }
             setPercentMinValue(absoluteValueToPercent(value));
         }
         return status;
+    }
+
+    public float getAbsoluteMaxValue() {
+        return mAbsoluteMaxValue;
     }
 
     /**
@@ -163,17 +172,23 @@ public class CustomRangeSeekBar extends View {
      *
      * @param value
      */
-    public void setSelectedAbsoluteMaxValue(float value) {
-        // in case mAbsoluteMinValue == mAbsoluteMaxValue, avoid division by zero when normalizing.
+    public boolean setSelectedAbsoluteMaxValue(float value) {
+        boolean status = true;
         if (0 == (mAbsoluteMaxValue - mAbsoluteMinValue)) {
             setPercentMaxValue(1d);
         } else {
             float minValue = percentToAbsoluteValue(mPercentMinValue);
-            if (mBetweenAbsoluteValue>0&&value - minValue <= mBetweenAbsoluteValue) {
+            if (mBetweenAbsoluteValue > 0 && value - minValue <= mBetweenAbsoluteValue) {
                 value = new Float(minValue + mBetweenAbsoluteValue);
+                status = false;
             }
-            setPercentMinValue(absoluteValueToPercent(value));
+            if (value - minValue <= 0) {
+                status = false;
+                value = minValue;
+            }
+            setPercentMaxValue(absoluteValueToPercent(value));
         }
+        return status;
     }
 
     @Override
@@ -205,7 +220,7 @@ public class CustomRangeSeekBar extends View {
                     float eventValue = percentToAbsoluteValue(screenToPercent(eventX));
                     if (Thumb.MIN.equals(mPressedThumb)) {
                         minValue = eventValue;
-                        if (mBetweenAbsoluteValue>0 && maxValue - minValue <= mBetweenAbsoluteValue)
+                        if (mBetweenAbsoluteValue > 0 && maxValue - minValue <= mBetweenAbsoluteValue)
                             minValue = new Float((maxValue - mBetweenAbsoluteValue));
 //                        setPercentMinValue(screenToPercent(event.getX()));
                         setPercentMinValue(absoluteValueToPercent(minValue));
@@ -213,7 +228,7 @@ public class CustomRangeSeekBar extends View {
                             mThumbListener.onMinMove(getSelectedAbsoluteMaxValue(), getSelectedAbsoluteMinValue());
                     } else if (Thumb.MAX.equals(mPressedThumb)) {
                         maxValue = eventValue;
-                        if (mBetweenAbsoluteValue>0 && maxValue - minValue <= mBetweenAbsoluteValue)
+                        if (mBetweenAbsoluteValue > 0 && maxValue - minValue <= mBetweenAbsoluteValue)
                             maxValue = new Float(minValue + mBetweenAbsoluteValue);
 //                        setPercentMaxValue(screenToPercent(event.getX()));
                         setPercentMaxValue(absoluteValueToPercent(maxValue));
@@ -318,7 +333,7 @@ public class CustomRangeSeekBar extends View {
      * @param canvas      The canvas to draw upon.
      */
     private void drawThumb(float screenCoord, boolean pressed, Canvas canvas) {
-        canvas.drawBitmap(mThumbImage, screenCoord - mThumbHalfWidth, (mWordHeight + 0.5f * (getHeight()-mWordHeight) - mThumbHalfHeight), mPaint);//pressed ? thumbPressedImage :
+        canvas.drawBitmap(mThumbImage, screenCoord - mThumbHalfWidth, (mWordHeight + 0.5f * (getHeight() - mWordHeight) - mThumbHalfHeight), mPaint);//pressed ? thumbPressedImage :
     }
 
     /**
@@ -331,7 +346,7 @@ public class CustomRangeSeekBar extends View {
     private void drawThumbMinText(float screenCoord, Number value, Canvas canvas) {
         String progress = getProgressStr(value.intValue());
         float progressWidth = mPaint.measureText(progress);
-        canvas.drawText(progress, screenCoord - progressWidth/2, mWordSize, mPaint);
+        canvas.drawText(progress, screenCoord - progressWidth / 2, mWordSize, mPaint);
     }
 
     /**
@@ -344,7 +359,7 @@ public class CustomRangeSeekBar extends View {
     private void drawThumbMaxText(float screenCoord, Number value, Canvas canvas) {
         String progress = getProgressStr(value.intValue());
         float progressWidth = mPaint.measureText(progress);
-        canvas.drawText(progress, screenCoord - progressWidth/2, mWordSize
+        canvas.drawText(progress, screenCoord - progressWidth / 2, mWordSize
                 , mPaint);
     }
 
@@ -370,6 +385,7 @@ public class CustomRangeSeekBar extends View {
 
     /**
      * 判断touchX是否在滑块点击范围内
+     *
      * @param touchX            需要被检测的 屏幕中的x坐标（相对于容器）
      * @param percentThumbValue 需要检测的滑块x坐标百分比值（滑块x坐标）
      */
@@ -395,6 +411,7 @@ public class CustomRangeSeekBar extends View {
 
     /**
      * 进度值，从百分比到绝对值
+     *
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -415,7 +432,6 @@ public class CustomRangeSeekBar extends View {
 
     /**
      * 进度值，从百分比值转换到屏幕中坐标值
-     *
      */
     private float percentToScreen(double percentValue) {
         return (float) (mWidthPadding + percentValue * (getWidth() - 2 * mWidthPadding));
@@ -437,7 +453,6 @@ public class CustomRangeSeekBar extends View {
 
     /**
      * Thumb枚举， 最大或最小
-     *
      */
     private enum Thumb {
         MIN, MAX
@@ -467,12 +482,11 @@ public class CustomRangeSeekBar extends View {
         void onMaxMove(Number max, Number min);
     }
 
-    private String getProgressStr(int progress){
+    private String getProgressStr(int progress) {
         String progressStr;
-        if(mProgressTextFormat==HINT_FORMAT_TIME){
+        if (mProgressTextFormat == HINT_FORMAT_TIME) {
             progressStr = formatSecondTime(progress);
-        }
-        else{
+        } else {
             progressStr = String.valueOf(progress);
         }
         return progressStr;
@@ -507,6 +521,4 @@ public class CustomRangeSeekBar extends View {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
-
-
 }
