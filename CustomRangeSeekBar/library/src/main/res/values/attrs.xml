@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomRangeSeekBar">
+        <!-- 选择器支持的最小值 -->
+        <attr name="absoluteMin" format="float" />
+        <!-- 选择器支持的最大值 -->
+        <attr name="absolutemMax" format="float" />
+        <!-- 初始min滑块比例值，取值范围为[0-1] -->
+        <attr name="startMinPercent" format="float" />
+        <!-- 初始max滑块比例值，取值范围为[0-1]-->
+        <attr name="startMaxPercent" format="float" />
+        <!-- 最大值和最小值之间的最小范围,绝对值（不会小于此范围） -->
+        <attr name="betweenAbsoluteValue" format="float" />
+        <!-- 进度文本显示格式 -->
+        <attr name="progressTextFormat" format="enum">
+            <enum name="numberFormat" value="0"/>
+            <enum name="timeFormat" value="1"/>
+        </attr>
+        <!-- 滑块图片 -->
+        <attr name="thumbImage" format="reference" />
+        <!-- 进度bar背景 -->
+        <attr name="progressBarBg" format="reference" />
+        <!-- 进度bar 范围内已选背景（progress bar 中min - max 之间） -->
+        <attr name="progressBarSelBg" format="reference" />
+        <!-- 进度文本字体大小 -->
+        <attr name="progressTextSize" format="dimension" />
+    </declare-styleable>
+</resources>

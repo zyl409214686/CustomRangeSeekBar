@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:rangeseekbar="http://schemas.android.com/apk/res-auto">
+    xmlns:rangeseekbar="http://schemas.android.com/apk/res-auto"
+    tools:context="com.zyl.myapplication.MainActivity">
 
     <com.zyl.customrangeseekbar.CustomRangeSeekBar
-        android:id="@+id/range_seekbar"
+        android:id="@+id/seekbar_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
         rangeseekbar:progressBarBg="@mipmap/seekbar_bg"
         rangeseekbar:progressBarSelBg="@mipmap/seekbar_sel_bg"
-        rangeseekbar:absolutemMax="100000"
+        rangeseekbar:thumbImage="@mipmap/btn_seekbar_normal"
+        rangeseekbar:startMinPercent="0.2"
+        rangeseekbar:startMaxPercent="0.8"
+        rangeseekbar:absolutemMax="1000000"
+        rangeseekbar:absoluteMin="50000"
+        rangeseekbar:progressTextSize="16dp"
+        rangeseekbar:progressTextFormat="timeFormat"
+        rangeseekbar:betweenAbsoluteValue="150000"
+        />
+
+    <com.zyl.customrangeseekbar.CustomRangeSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekbar_time"
+        android:layout_marginTop="100dp"
+        rangeseekbar:progressBarBg="@mipmap/seekbar_bg"
+        rangeseekbar:progressBarSelBg="@mipmap/seekbar_sel_bg"
+        rangeseekbar:thumbImage="@mipmap/btn_seekbar_normal"
+        rangeseekbar:startMinPercent="0.2"
+        rangeseekbar:startMaxPercent="0.8"
+        rangeseekbar:absolutemMax="10000"
         rangeseekbar:absoluteMin="0"
         rangeseekbar:progressTextSize="16dp"
         rangeseekbar:progressTextFormat="numberFormat"
+        rangeseekbar:betweenAbsoluteValue="2000"
         />
 
 </RelativeLayout>
