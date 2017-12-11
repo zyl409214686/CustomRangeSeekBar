@@ -1,7 +1,6 @@
 # CustomRangeSeekBar
 
-![](https://jitpack.io/v/zyl409214686/CustomRangeSeekBar.svg)(https://jitpack.io/#User/Repo)
-
+[![](https://jitpack.io/v/zyl409214686/CustomRangeSeekBar.svg)](https://jitpack.io/#zyl409214686/CustomRangeSeekBar)
 
 ![效果图](screenshot/test.gif)
 
