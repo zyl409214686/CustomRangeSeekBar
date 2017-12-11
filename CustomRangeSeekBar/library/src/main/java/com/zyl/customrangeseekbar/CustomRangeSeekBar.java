@@ -70,7 +70,8 @@ public class CustomRangeSeekBar extends View {
     private int mWordHeight;
     //文本字体大小
     private float mWordSize;
-
+    private float mStartMinPercent;
+    private float mStartMaxPercent;
     public CustomRangeSeekBar(Context context) {
         super(context);
     }
@@ -80,8 +81,8 @@ public class CustomRangeSeekBar extends View {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CustomRangeSeekBar, 0, 0);
         mAbsoluteMinValue = a.getFloat(R.styleable.CustomRangeSeekBar_absoluteMin, (float) 0.0);
         mAbsoluteMaxValue = a.getFloat(R.styleable.CustomRangeSeekBar_absolutemMax, (float) 100.0);
-        float startMinPercent = a.getFloat(R.styleable.CustomRangeSeekBar_startMinPercent, 0);
-        float startMaxPercent = a.getFloat(R.styleable.CustomRangeSeekBar_startMaxPercent, 1);
+        mStartMinPercent = a.getFloat(R.styleable.CustomRangeSeekBar_startMinPercent, 0);
+        mStartMaxPercent = a.getFloat(R.styleable.CustomRangeSeekBar_startMaxPercent, 1);
         mThumbImage = BitmapFactory.decodeResource(getResources(), a.getResourceId(R.styleable.CustomRangeSeekBar_thumbImage, R.mipmap.btn_seekbar_normal));
         mProgressBarBg = BitmapFactory.decodeResource(getResources(), a.getResourceId(R.styleable.CustomRangeSeekBar_progressBarBg, R.mipmap.seekbar_bg));
         mProgressBarSelBg = BitmapFactory.decodeResource(getResources(), a.getResourceId(R.styleable.CustomRangeSeekBar_progressBarSelBg, R.mipmap.seekbar_sel_bg));
@@ -97,9 +98,23 @@ public class CustomRangeSeekBar extends View {
         mWidthPadding = mThumbHalfHeight;
         Paint.FontMetrics metrics = mPaint.getFontMetrics();
         mWordHeight = (int) (metrics.descent - metrics.ascent);
-        setPercentSelectedMinValue(startMinPercent);
-        setPercentSelectedMaxValue(startMaxPercent);
+        restorePercentSelectedMinValue();
+        restorePercentSelectedMaxValue();
         a.recycle();
+    }
+
+    /**
+     * 还原min滑块到初始值
+     */
+    public void restorePercentSelectedMinValue(){
+        setPercentSelectedMinValue(mStartMinPercent);
+    }
+
+    /**
+     * 还原max滑块到初始值
+     */
+    public void restorePercentSelectedMaxValue(){
+        setPercentSelectedMaxValue(mStartMaxPercent);
     }
 
     @Override

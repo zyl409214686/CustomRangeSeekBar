@@ -37,7 +37,7 @@ build.gradle in app module
 
 ```
 dependencies {
-    compile 'com.github.zyl409214686:CustomRangeSeekBar:v1.0.1'
+    compile 'com.github.zyl409214686:CustomRangeSeekBar:v1.0.3'
 }
 ```
 
@@ -68,7 +68,8 @@ dependencies {
 | version | message                                  |
 | :-----: | :--------------------------------------- |
 | v1.0.1  | add startMinPercent、startMaxPercent Attributes |
-| v1.0.2  | add demo module and refactor code |
+| v1.0.2  | add demo module and refactor code        |
+| v1.0.3  | add restore min&max selected value methods |
 
 
 
